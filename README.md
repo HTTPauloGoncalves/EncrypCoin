@@ -10,7 +10,7 @@ Desenvolvido em **ASP.NET + PostgreSQL + Redis + Docker**, com frontend em **HTM
 | Camada             | Tecnologias                               |
 | ------------------ | ----------------------------------------- |
 | **Frontend**       | HTML, JavaScript, TailwindCSS             |
-| **Backend (API)**  | ASP.NET 8 (C#), SignalR (WebSockets), JWT |
+| **Backend (API)**  | ASP.NET 9 (C#), SignalR (WebSockets), JWT |
 | **Banco**          | PostgreSQL                                |
 | **Cache**          | Redis                                     |
 | **Infraestrutura** | Docker, Docker Compose                    |
@@ -68,7 +68,7 @@ flowchart TD
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seuusuario/encrypcoin.git
+git clone https://github.com/HTTPauloGoncalves/EncrypCoin
 cd encrypcoin
 
 # 2. Suba os containers
