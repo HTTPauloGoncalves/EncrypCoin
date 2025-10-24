@@ -69,17 +69,15 @@ flowchart TD
 ```bash
 # 1. Clone o repositório
 git clone https://github.com/HTTPauloGoncalves/EncrypCoin
-cd encrypcoin
+cd EncrypCoin\Backend\EncrypCoin.API\EncrypCoin.API
 
-# 2. Suba os containers
-docker compose up --build
+# 2. Suba redis
+docker pull redis
+docker run --name redis-server -p 6379:6379 -d redis
+
+# 3. Ajuste o appsettings e rode o projeto
+"Redis": "localhost:6379"
 ```
-
-Acesse:
-
-* Frontend → [http://localhost:8080](http://localhost:8080)
-* Backend → [http://localhost:5000/api/coin](http://localhost:5000/api/coin)
-
 ---
 
 ### 📈 Próximos passos
