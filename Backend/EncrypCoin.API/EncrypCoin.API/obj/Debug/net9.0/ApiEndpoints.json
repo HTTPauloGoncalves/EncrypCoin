@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_2",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
     "RelativePath": "",
     "HttpMethod": "GET",
     "IsController": false,
@@ -64,13 +64,13 @@
   {
     "ContainingType": "EncrypCoin.API.Controllers.CoinsController",
     "Method": "GetPrice",
-    "RelativePath": "api/Coins/prices/{name}/{vsCurrency}",
+    "RelativePath": "api/Coins/prices/{coinId}/{vsCurrency}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "name",
+        "Name": "coinId",
         "Type": "System.String",
         "IsRequired": true
       },

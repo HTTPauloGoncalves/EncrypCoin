@@ -5,14 +5,14 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/Coins/prices/{name}/{vsCurrency}": {
+    "/api/Coins/prices/{coinId}/{vsCurrency}": {
       "get": {
         "tags": [
           "Coins"
         ],
         "parameters": [
           {
-            "name": "name",
+            "name": "coinId",
             "in": "path",
             "required": true,
             "schema": {
