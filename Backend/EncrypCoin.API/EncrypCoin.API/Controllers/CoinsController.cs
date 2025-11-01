@@ -32,14 +32,14 @@ namespace EncrypCoin.API.Controllers {
             return Ok(dtos);
         }
 
-        [HttpGet("markets/{vsCurrency}")]
+        [HttpGet("markets/{vsCurrency}/{perPage}/{page}")]
         [ProducesResponseType(typeof(List<CoinMarketDto>), 200)]
-        public async Task<IActionResult> GetMarkets(string vsCurrency)
+        public async Task<IActionResult> GetMarkets(string vsCurrency, int perPage, int page)
         {
             if (string.IsNullOrWhiteSpace(vsCurrency))
                 return BadRequest("vsCurrency é obrigatório.");
 
-            var dtos = await _coinGeckoClient.GetMarketsAsync(vsCurrency);
+            var dtos = await _coinGeckoClient.GetMarketsAsync(vsCurrency, perPage, page);
             return Ok(dtos);
         }
 

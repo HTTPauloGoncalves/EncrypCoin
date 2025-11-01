@@ -1,8 +1,8 @@
-﻿using EncrypCoin.API.Services.Aplication.Interfaces;
+﻿using EncrypCoin.API.Services.Application.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace EncrypCoin.API.Services.Aplication.Implementations
+namespace EncrypCoin.API.Services.Application.Implementations
 {
     public class RedisCacheService : ICacheService
     {

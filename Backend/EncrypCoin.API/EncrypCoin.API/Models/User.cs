@@ -22,9 +22,9 @@ namespace EncrypCoin.API.Models
         public string Role { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
-
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiryTime { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
         public DateTime? UpdatedAt { get; set; }
 
         public DateTime? LastLoginAt { get; set; }

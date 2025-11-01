@@ -1,6 +1,6 @@
 ﻿using EncrypCoin.API.Dtos;
 using EncrypCoin.API.Dtos.External.Coingecko;
-using EncrypCoin.API.Services.Aplication.Interfaces;
+using EncrypCoin.API.Services.Application.Interfaces;
 using EncrypCoin.API.Services.Base;
 using EncrypCoin.API.Services.External.Interfaces;
 using Microsoft.Extensions.Logging;

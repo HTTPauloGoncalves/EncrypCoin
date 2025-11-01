@@ -1,4 +1,4 @@
-﻿namespace EncrypCoin.API.Services.Aplication.Interfaces
+﻿namespace EncrypCoin.API.Services.Application.Interfaces
 {
     public interface ICacheService
     {

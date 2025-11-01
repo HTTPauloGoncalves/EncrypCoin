@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_5",
     "RelativePath": "",
     "HttpMethod": "GET",
     "IsController": false,
@@ -38,7 +38,7 @@
   {
     "ContainingType": "EncrypCoin.API.Controllers.CoinsController",
     "Method": "GetMarkets",
-    "RelativePath": "api/Coins/markets/{vsCurrency}",
+    "RelativePath": "api/Coins/markets/{vsCurrency}/{perPage}/{page}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -46,6 +46,16 @@
       {
         "Name": "vsCurrency",
         "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "perPage",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -100,6 +110,128 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "GetAllAsync",
+    "RelativePath": "api/User",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "RegisterUserAsync",
+    "RelativePath": "api/User",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserRegisterRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "GetUserByIdAsync",
+    "RelativePath": "api/User/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "AuthenticateUserAsync",
+    "RelativePath": "api/User/authenticate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserLoginRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "GetUserByEmailAsync",
+    "RelativePath": "api/User/email/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "EmailExistsAsync",
+    "RelativePath": "api/User/exists/email/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "UsernameExistsAsync",
+    "RelativePath": "api/User/exists/username/{username}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "GetUserByUsernameAsync",
+    "RelativePath": "api/User/username/{username}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   }
 ]

@@ -1,36 +1,99 @@
+﻿using AutoMapper;
 using EncrypCoin.API.Data;
-using EncrypCoin.API.Services.Aplication.Implementations;
-using EncrypCoin.API.Services.Aplication.Interfaces;
+using EncrypCoin.API.Dtos.Mappings;
+using EncrypCoin.API.Repository.Implementations;
+using EncrypCoin.API.Repository.Interfaces;
+using EncrypCoin.API.Services.Application.Implementations;
+using EncrypCoin.API.Services.Application.Interfaces;
 using EncrypCoin.API.Services.External.Implementations;
 using EncrypCoin.API.Services.External.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers e Swagger
+// =========================
+// 🔐 Configuração JWT
+// =========================
+var key = builder.Configuration["Jwt:Key"]
+          ?? throw new InvalidOperationException("Jwt:Key não configurada");
+var issuer = builder.Configuration["Jwt:Issuer"];
+var audience = builder.Configuration["Jwt:Audience"];
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+// =========================
+// 🧩 Política de Admin
+// =========================
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
+
+// =========================
+// ⚙️ Controllers e Swagger
+// =========================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Redis
+// =========================
+// 🗺️ AutoMapper
+// =========================
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// =========================
+// 🔴 Redis
+// =========================
 var redisConnection = builder.Configuration.GetConnectionString("Redis")
-                     ?? throw new InvalidOperationException("Redis n�o configurado!");
+                     ?? throw new InvalidOperationException("Redis não configurado!");
 
 var multiplexer = await ConnectionMultiplexer.ConnectAsync(redisConnection);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
-// Banco de dados
+// =========================
+// 🗄️ Banco de Dados (PostgreSQL)
+// =========================
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                       ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection n�o est� configurado!");
+                       ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection não está configurado!");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// CoinGecko HttpClient
+// =========================
+// 💼 Serviços da Aplicação
+// =========================
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// =========================
+// 💰 CoinGecko HttpClient
+// =========================
 var baseUrl = builder.Configuration["CoinGecko:BaseUrl"]
-              ?? throw new InvalidOperationException("CoinGecko:BaseUrl n�o est� configurado!");
+              ?? throw new InvalidOperationException("CoinGecko:BaseUrl não está configurado!");
 
 builder.Services.AddHttpClient<ICoinGeckoClient, CoinGeckoClient>(client =>
 {
@@ -39,10 +102,14 @@ builder.Services.AddHttpClient<ICoinGeckoClient, CoinGeckoClient>(client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
-// Build
+// =========================
+// 🚀 Build da Aplicação
+// =========================
 var app = builder.Build();
 
-// Swagger dev
+// =========================
+// 🧪 Swagger (Apenas em Dev)
+// =========================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -50,7 +117,9 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/", () => Results.Redirect("/swagger"));
 }
 
-// Middleware global de erros
+// =========================
+// ⚠️ Middleware Global de Erros
+// =========================
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -60,14 +129,22 @@ app.UseExceptionHandler(errorApp =>
 
         await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
         {
-            error = "Ocorreu um erro interno ao processar sua solicita��o.",
+            error = "Ocorreu um erro interno ao processar sua solicitação.",
             status = 500
         }));
     });
 });
 
+// =========================
+// 🔒 Middlewares
+// =========================
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
+
+// =========================
+// 📡 Map Controllers
+// =========================
 app.MapControllers();
 
 await app.RunAsync();
