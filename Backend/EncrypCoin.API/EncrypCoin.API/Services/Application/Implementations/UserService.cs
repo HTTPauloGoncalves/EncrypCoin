@@ -15,17 +15,20 @@ namespace EncrypCoin.API.Services.Application.Implementations
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cache;
 
         public UserService(
             ILogger<UserService> logger,
             IUserRepository userRepository,
             ITokenService tokenService,
-            IMapper mapper)
+            IMapper mapper,
+            ICacheService cache)
         {
             _logger = logger;
             _userRepository = userRepository;
             _tokenService = tokenService;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<AuthResponseDto> AuthenticateAsync(UserLoginRequestDto userLoginRequestDto)
@@ -173,16 +176,187 @@ namespace EncrypCoin.API.Services.Application.Implementations
 
         public async Task<List<UserResponseDto>> GetAllAsync()
         {
-            _logger.LogInformation("Obtendo todos os usuários.");
+            const string cacheKey = "users:all";
+
+            var cachedUsers = await _cache.GetAsync<List<UserResponseDto>>(cacheKey);
+            if (cachedUsers != null)
+            {
+                _logger.LogInformation("Retornando lista de usuários do cache (Redis).");
+                return cachedUsers;
+            }
+
+            _logger.LogInformation("Buscando todos os usuários no banco de dados...");
             var users = await _userRepository.GetAllAsync();
 
             if (users == null || !users.Any())
             {
-                _logger.LogWarning("Nenhum usuário encontrado.");
+                _logger.LogWarning("⚠️ Nenhum usuário encontrado.");
                 return new List<UserResponseDto>();
             }
 
-            return _mapper.Map<List<UserResponseDto>>(users);
+            var mappedUsers = _mapper.Map<List<UserResponseDto>>(users);
+
+            await _cache.SetAsync(cacheKey, mappedUsers, TimeSpan.FromMinutes(5));
+            _logger.LogInformation("✅ Usuários armazenados no cache Redis por 5 minutos.");
+
+            return mappedUsers;
+        }
+
+
+        public async Task<UserResponseDto> UpdateUserAdminAsync(UserUpdateAdminRequestDto userUpdateAdminRequestDto)
+        {
+            if (userUpdateAdminRequestDto.Id == Guid.Empty)
+                throw new ArgumentException("ID do usuário não pode ser vazio.");
+
+            _logger.LogInformation("Atualizando usuário com ID: {UserId}", userUpdateAdminRequestDto.Id);
+
+            var user = await _userRepository.GetByIdAsync(userUpdateAdminRequestDto.Id);
+            if (user == null)
+            {
+                _logger.LogWarning("Usuário com ID {UserId} não encontrado para atualização.", userUpdateAdminRequestDto.Id);
+                throw new NotFoundException($"Usuário com ID {userUpdateAdminRequestDto.Id} não encontrado.");
+            }
+
+            user.Name = userUpdateAdminRequestDto.Name ?? user.Name;
+            user.Email = userUpdateAdminRequestDto.Email ?? user.Email;
+            user.Role = userUpdateAdminRequestDto.Role?.ToString() ?? user.Role;
+            user.IsActive = userUpdateAdminRequestDto.IsActive ?? user.IsActive;
+
+            if (!string.IsNullOrWhiteSpace(userUpdateAdminRequestDto.Password))
+                user.PasswordHash = PasswordHasher.HashPassword(userUpdateAdminRequestDto.Password);
+
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+            _logger.LogInformation("Usuário com ID {UserId} atualizado com sucesso.", userUpdateAdminRequestDto.Id);
+
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public async Task<UserResponseDto> UpdateNameAsync(UserUpdateRequestDto userUpdateRequestDto)
+        {
+            if (userUpdateRequestDto.Id == Guid.Empty)
+                throw new ArgumentException("ID do usuário não pode ser vazio.");
+            if (string.IsNullOrWhiteSpace(userUpdateRequestDto.Name))
+                throw new ArgumentException("Nome não pode ser vazio.");
+
+            _logger.LogInformation("Atualizando nome do usuário com ID: {UserId}", userUpdateRequestDto.Id);
+
+            var user = await _userRepository.GetByIdAsync(userUpdateRequestDto.Id);
+            if (user == null)
+            {
+                _logger.LogWarning("Usuário com ID {UserId} não encontrado para atualização.", userUpdateRequestDto.Id);
+                throw new NotFoundException($"Usuário com ID {userUpdateRequestDto.Id} não encontrado.");
+            }
+
+            user.Name = userUpdateRequestDto.Name;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+            _logger.LogInformation("Nome do usuário com ID {UserId} atualizado com sucesso.", userUpdateRequestDto.Id);
+
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public async Task<UserResponseDto> UpdateEmailAsync(UserUpdateRequestDto userUpdateRequestDto)
+        {
+            if (userUpdateRequestDto.Id == Guid.Empty)
+                throw new ArgumentException("ID do usuário não pode ser vazio.");
+            if (string.IsNullOrWhiteSpace(userUpdateRequestDto.Email))
+                throw new ArgumentException("Email não pode ser vazio.");
+
+            _logger.LogInformation("Atualizando email do usuário com ID: {UserId}", userUpdateRequestDto.Id);
+
+            var user = await _userRepository.GetByIdAsync(userUpdateRequestDto.Id);
+            if (user == null)
+            {
+                _logger.LogWarning("Usuário com ID {UserId} não encontrado para atualização.", userUpdateRequestDto.Id);
+                throw new NotFoundException($"Usuário com ID {userUpdateRequestDto.Id} não encontrado.");
+            }
+
+            if (await _userRepository.EmailExistsAsync(userUpdateRequestDto.Email))
+                throw new ValidationException($"Email {userUpdateRequestDto.Email} já está em uso.");
+
+            user.Email = userUpdateRequestDto.Email;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+            _logger.LogInformation("Email do usuário com ID {UserId} atualizado com sucesso.", userUpdateRequestDto.Id);
+
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public async Task<UserResponseDto> UpdatePasswordAsync(UserUpdateRequestDto userUpdateRequestDto)
+        {
+            if (userUpdateRequestDto.Id == Guid.Empty)
+                throw new ArgumentException("ID do usuário não pode ser vazio.");
+            if (string.IsNullOrWhiteSpace(userUpdateRequestDto.Password))
+                throw new ArgumentException("Senha não pode ser vazia.");
+
+            _logger.LogInformation("Atualizando senha do usuário com ID: {UserId}", userUpdateRequestDto.Id);
+
+            var user = await _userRepository.GetByIdAsync(userUpdateRequestDto.Id);
+            if (user == null)
+            {
+                _logger.LogWarning("Usuário com ID {UserId} não encontrado para atualização.", userUpdateRequestDto.Id);
+                throw new NotFoundException($"Usuário com ID {userUpdateRequestDto.Id} não encontrado.");
+            }
+
+            user.PasswordHash = PasswordHasher.HashPassword(userUpdateRequestDto.Password);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+            _logger.LogInformation("Senha do usuário com ID {UserId} atualizada com sucesso.", userUpdateRequestDto.Id);
+
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public async Task<bool> DeactivateUserAsync(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("ID do usuário não pode ser vazio.");
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new NotFoundException($"Usuário com ID {userId} não encontrado.");
+
+            user.IsActive = false;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+            _logger.LogInformation("Usuário com ID {UserId} desativado com sucesso.", userId);
+            return true;
+        }
+
+        public async Task<bool> DeleteUserAsync(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("ID do usuário não pode ser vazio.");
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException($"Usuário com ID {userId} não encontrado.");
+
+            await _userRepository.DeleteByIdAsync(userId);
+
+            _logger.LogInformation("Usuário com ID {UserId} deletado com sucesso.", userId);
+            return true;
+        }
+
+        public async Task<UserResponseDto> UpdateAsync(UserUpdateRequestDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(dto.Id)
+                ?? throw new NotFoundException($"Usuário com ID {dto.Id} não encontrado.");
+
+            if (!string.IsNullOrWhiteSpace(dto.Name)) user.Name = dto.Name;
+            if (!string.IsNullOrWhiteSpace(dto.Email)) user.Email = dto.Email;
+            if (!string.IsNullOrWhiteSpace(dto.Password)) user.PasswordHash = PasswordHasher.HashPassword(dto.Password);
+
+            user.UpdatedAt = DateTime.UtcNow;
+            await _userRepository.UpdateAsync(user);
+
+            return _mapper.Map<UserResponseDto>(user);
         }
     }
 }

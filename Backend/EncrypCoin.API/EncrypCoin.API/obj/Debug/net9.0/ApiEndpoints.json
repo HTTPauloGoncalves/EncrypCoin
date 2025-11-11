@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_5",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_6",
     "RelativePath": "",
     "HttpMethod": "GET",
     "IsController": false,
@@ -113,6 +113,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "EncrypCoin.API.Controllers.TokenController",
+    "Method": "RefreshAsync",
+    "RelativePath": "api/Token/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "EncrypCoin.API.Dtos.Application.Auth.Request.TokenRefreshRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "EncrypCoin.API.Controllers.UserController",
     "Method": "GetAllAsync",
     "RelativePath": "api/User",
@@ -156,6 +172,22 @@
   },
   {
     "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "DeleteUserAsync",
+    "RelativePath": "api/User/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
     "Method": "AuthenticateUserAsync",
     "RelativePath": "api/User/authenticate",
     "HttpMethod": "POST",
@@ -165,6 +197,22 @@
       {
         "Name": "user",
         "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserLoginRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "DeactivateUserAsync",
+    "RelativePath": "api/User/deactivate/{userId}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],
@@ -213,6 +261,86 @@
       {
         "Name": "username",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "UpdateUserAsync",
+    "RelativePath": "api/User/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserUpdateRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "UpdateUserAdminAsync",
+    "RelativePath": "api/User/update/admin",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserUpdateAdminRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "UpdateEmailAsync",
+    "RelativePath": "api/User/update/email",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserUpdateRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "UpdateNameAsync",
+    "RelativePath": "api/User/update/name",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserUpdateRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EncrypCoin.API.Controllers.UserController",
+    "Method": "UpdatePasswordAsync",
+    "RelativePath": "api/User/update/password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EncrypCoin.API.Dtos.Application.User.Request.UserUpdateRequestDto",
         "IsRequired": true
       }
     ],

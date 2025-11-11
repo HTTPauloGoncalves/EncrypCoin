@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EncrypCoin.API.Data;
 using EncrypCoin.API.Dtos.Mappings;
+using EncrypCoin.API.Middlewares;
 using EncrypCoin.API.Repository.Implementations;
 using EncrypCoin.API.Repository.Interfaces;
 using EncrypCoin.API.Services.Application.Implementations;
@@ -10,6 +11,7 @@ using EncrypCoin.API.Services.External.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using System.Text;
 
@@ -43,6 +45,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 // =========================
 // 🧩 Política de Admin
 // =========================
@@ -57,6 +60,35 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "EncrypCoin API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Insira o token JWT assim: Bearer {token}",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 // =========================
 // 🗺️ AutoMapper
@@ -140,6 +172,7 @@ app.UseExceptionHandler(errorApp =>
 // =========================
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseMiddleware<ActiveUserMiddleware>();
 app.UseAuthorization();
 
 // =========================
