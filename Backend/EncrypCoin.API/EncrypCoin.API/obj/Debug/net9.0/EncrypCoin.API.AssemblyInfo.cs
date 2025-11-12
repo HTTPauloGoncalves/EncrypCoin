@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EncrypCoin.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80a17cd3b096d977c02d282711e6c8565ba99dae")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47e7a13c31187f174cb602da61c231b5b81ddfc0")]
 [assembly: System.Reflection.AssemblyProductAttribute("EncrypCoin.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EncrypCoin.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,115 @@
+# -----------------------------
+# .NET / C# padrão para Git
+# -----------------------------
+
+## Build results
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+## Rider / Visual Studio
+.idea/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Testes
+TestResult*/
+*.testlog
+*.trx
+*.coverage
+*.coveragexml
+
+## Arquivos temporários
+*.tmp
+*.temp
+*.log
+*.vspscc
+*_i.c
+*_p.c
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlh
+*.tli
+*.tmp_proj
+
+## NuGet
+*.nupkg
+*.snupkg
+# Pasta de pacotes
+packages/
+# Cache local do NuGet
+.nuget/
+# Arquivos de lock
+project.lock.json
+project.fragment.lock.json
+
+## Configuração do usuário / IDE
+.vscode/
+*.code-workspace
+
+## Cache e artefatos temporários
+*.dbmdl
+*.bak
+*.orig
+*.rej
+*.cache
+*.swp
+*.swo
+*.sln.iml
+
+## Sistema operacional
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+## Publicações e Deploy
+publish/
+*.Publish.xml
+
+## Docker
+docker-compose.override.yml
+*.env
+.env.*
+.dockerignore
+
+## Logs
+logs/
+*.log
+
+## Certificados locais / segredos
+*.pfx
+*.snk
+secrets.json
+appsettings.Development.json
+appsettings.Local.json
+
+## Cache do Entity Framework
+MigrationsSnapshot.cs
