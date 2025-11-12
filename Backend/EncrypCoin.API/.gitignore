@@ -1,0 +1,70 @@
+# Build Folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Logs
+*.log
+
+# NuGet Packages
+*.nupkg
+packages/
+*.snupkg
+
+# ASP.NET / .NET
+*.dll
+*.exe
+*.pdb
+*.cache
+*.dbmdl
+*.mdb
+*.bak
+*.backup
+*.publishsettings
+
+# Entity Framework / Migrations
+Migrations/
+
+# Test results
+TestResults/
+*.trx
+
+# User-specific files
+*.rsuser
+*.resharper
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+
+# DotCover
+*.dotCover
+
+# Coverage
+*.coverage
+*.coveragexml
+*.testsettings
+*.vsmdi
+*.testResults/
+*.ncrunch*
+
+# Azure DevOps / TFS
+.tfignore
+
+# Others
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
