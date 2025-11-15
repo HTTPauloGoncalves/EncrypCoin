@@ -15,7 +15,7 @@ namespace EncrypCoin.API.Services.Application.Interfaces
         Task<UserResponseDto?> GetByIdAsync(Guid id);
         Task<List<UserResponseDto>> GetAllAsync();
         Task<UserResponseDto> UpdateUserAdminAsync(UserUpdateAdminRequestDto userUpdateAdminRequestDto);
-        Task<UserResponseDto> UpdateAsync(UserUpdateRequestDto dto);
+        Task<UserResponseDto?> UpdateAsync(Guid id, UserUpdateRequestDto dto);
         Task<UserResponseDto> UpdateNameAsync(UserUpdateRequestDto userUpdateRequestDto);
         Task<UserResponseDto> UpdateEmailAsync(UserUpdateRequestDto userUpdateRequestDto);
         Task<UserResponseDto> UpdatePasswordAsync(UserUpdateRequestDto userUpdateRequestDto);

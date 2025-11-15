@@ -13,151 +13,110 @@ namespace EncrypCoin.API.Controllers
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)
-             => _userService = userService;
+            => _userService = userService;
 
         // ----------------------------
         // GET
         // ----------------------------
-
-        [HttpGet("{id}")]
+        [Authorize]
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(UserResponseDto), 200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {
             var userDto = await _userService.GetByIdAsync(id);
-            return Ok(userDto);
+            return userDto is null ? NotFound() : Ok(userDto);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), 200)]
         public async Task<IActionResult> GetAllAsync()
         {
             var users = await _userService.GetAllAsync();
             return Ok(users);
         }
 
-        [HttpGet("username/{username}")]
+        [Authorize]
+        [HttpGet("by-username/{username}")]
         public async Task<IActionResult> GetUserByUsernameAsync(string username)
         {
             var userDto = await _userService.GetByUsernameAsync(username);
-            return Ok(userDto);
+            return userDto is null ? NotFound() : Ok(userDto);
         }
 
-        [HttpGet("email/{email}")]
+        [Authorize] // 🔒 segurança
+        [HttpGet("by-email/{email}")]
         public async Task<IActionResult> GetUserByEmailAsync(string email)
         {
             var userDto = await _userService.GetByEmailAsync(email);
-            return Ok(userDto);
+            return userDto is null ? NotFound() : Ok(userDto);
         }
 
-        [HttpGet("exists/username/{username}")]
-        public async Task<IActionResult> UsernameExistsAsync(string username)
+        [Authorize]
+        [HttpGet("exists")]
+        public async Task<IActionResult> ExistsAsync([FromQuery] string username, [FromQuery] string email)
         {
-            bool exists = await _userService.UsernameExistsAsync(username);
-            return Ok(exists);
-        }
+            if (!string.IsNullOrWhiteSpace(username))
+                return Ok(await _userService.UsernameExistsAsync(username));
 
-        [HttpGet("exists/email/{email}")]
-        public async Task<IActionResult> EmailExistsAsync(string email)
-        {
-            bool exists = await _userService.EmailExistsAsync(email);
-            return Ok(exists);
+            if (!string.IsNullOrWhiteSpace(email))
+                return Ok(await _userService.EmailExistsAsync(email));
+
+            return BadRequest("Informe username ou email.");
         }
 
         // ----------------------------
         // POST
         // ----------------------------
-
         [HttpPost("authenticate")]
-        public async Task<IActionResult> AuthenticateUserAsync([FromBody] UserLoginRequestDto user)
+        public async Task<IActionResult> AuthenticateUserAsync([FromBody] UserLoginRequestDto dto)
         {
-            if (user == null)
+            if (dto is null)
                 return BadRequest("Dados inválidos.");
 
-            var authenticatedUser = await _userService.AuthenticateAsync(user);
-            return Ok(authenticatedUser);
+            var authenticatedUser = await _userService.AuthenticateAsync(dto);
+            return authenticatedUser is null ? Unauthorized() : Ok(authenticatedUser);
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegisterRequestDto user)
+        public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegisterRequestDto dto)
         {
-            if (user == null)
+            if (dto is null)
                 return BadRequest("Dados inválidos.");
 
-            var createdUser = await _userService.RegisterAsync(user);
+            var createdUser = await _userService.RegisterAsync(dto);
             return Ok(createdUser);
         }
 
         // ----------------------------
         // PUT / PATCH
         // ----------------------------
-
         [Authorize]
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] UserUpdateRequestDto dto)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateUserAsync(Guid id, [FromBody] UserUpdateRequestDto dto)
         {
-            if (dto == null)
-                return BadRequest("Dados inválidos.");
-
-            var updatedUser = await _userService.UpdateAsync(dto);
-            return Ok(updatedUser);
+            var updated = await _userService.UpdateAsync(id, dto);
+            return updated is null ? NotFound() : Ok(updated);
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("update/admin")]
-        public async Task<IActionResult> UpdateUserAdminAsync([FromBody] UserUpdateAdminRequestDto dto)
+        [HttpPatch("{id:guid}/deactivate")]
+        public async Task<IActionResult> DeactivateUserAsync(Guid id)
         {
-            if (dto == null)
-                return BadRequest("Dados inválidos.");
-
-            var updatedUser = await _userService.UpdateUserAdminAsync(dto);
-            return Ok(updatedUser);
-        }
-
-        [Authorize]
-        [HttpPut("update/name")]
-        public async Task<IActionResult> UpdateNameAsync([FromBody] UserUpdateRequestDto dto)
-        {
-            var updated = await _userService.UpdateNameAsync(dto);
-            return Ok(updated);
-        }
-
-        [Authorize]
-        [HttpPut("update/email")]
-        public async Task<IActionResult> UpdateEmailAsync([FromBody] UserUpdateRequestDto dto)
-        {
-            var updated = await _userService.UpdateEmailAsync(dto);
-            return Ok(updated);
-        }
-
-        [Authorize]
-        [HttpPut("update/password")]
-        public async Task<IActionResult> UpdatePasswordAsync([FromBody] UserUpdateRequestDto dto)
-        {
-            var updated = await _userService.UpdatePasswordAsync(dto);
-            return Ok(updated);
-        }
-
-        // ----------------------------
-        // PATCH (para status)
-        // ----------------------------
-
-        [Authorize(Roles = "Admin")]
-        [HttpPatch("deactivate/{userId}")]
-        public async Task<IActionResult> DeactivateUserAsync(Guid userId)
-        {
-            bool result = await _userService.DeactivateUserAsync(userId);
-            return result ? Ok("Usuário desativado com sucesso.") : BadRequest("Falha ao desativar o usuário.");
+            bool result = await _userService.DeactivateUserAsync(id);
+            return result ? Ok("Usuário desativado.") : NotFound("Usuário não encontrado.");
         }
 
         // ----------------------------
         // DELETE
         // ----------------------------
-
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> DeleteUserAsync(Guid userId)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteUserAsync(Guid id)
         {
-            bool result = await _userService.DeleteUserAsync(userId);
-            return result ? Ok("Usuário deletado com sucesso.") : BadRequest("Falha ao deletar o usuário.");
+            bool result = await _userService.DeleteUserAsync(id);
+            return result ? Ok("Usuário removido.") : NotFound("Usuário não encontrado.");
         }
     }
 }

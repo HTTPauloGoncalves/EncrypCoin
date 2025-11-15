@@ -344,19 +344,26 @@ namespace EncrypCoin.API.Services.Application.Implementations
             return true;
         }
 
-        public async Task<UserResponseDto> UpdateAsync(UserUpdateRequestDto dto)
+        public async Task<UserResponseDto> UpdateAsync(Guid id, UserUpdateRequestDto dto)
         {
-            var user = await _userRepository.GetByIdAsync(dto.Id)
-                ?? throw new NotFoundException($"Usuário com ID {dto.Id} não encontrado.");
+            var user = await _userRepository.GetByIdAsync(id)
+                ?? throw new NotFoundException($"Usuário com ID {id} não encontrado.");
 
-            if (!string.IsNullOrWhiteSpace(dto.Name)) user.Name = dto.Name;
-            if (!string.IsNullOrWhiteSpace(dto.Email)) user.Email = dto.Email;
-            if (!string.IsNullOrWhiteSpace(dto.Password)) user.PasswordHash = PasswordHasher.HashPassword(dto.Password);
+            if (!string.IsNullOrWhiteSpace(dto.Name))
+                user.Name = dto.Name;
+
+            if (!string.IsNullOrWhiteSpace(dto.Email))
+                user.Email = dto.Email;
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                user.PasswordHash = PasswordHasher.HashPassword(dto.Password);
 
             user.UpdatedAt = DateTime.UtcNow;
+
             await _userRepository.UpdateAsync(user);
 
             return _mapper.Map<UserResponseDto>(user);
         }
+
     }
 }
