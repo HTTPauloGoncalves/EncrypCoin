@@ -106,5 +106,94 @@ namespace EncrypCoin.API.Services.External.Implementations
 
             return result;
         }
+
+        public async Task<object> CheckAPIAsync()
+        {
+            var response = await GetJsonAsync<object>("ping");
+            return response;
+        }
+
+        public async Task<List<object>> GetVsCurrenciesListAsync()
+        {
+            string key = $"vs_currencies";
+            var cached = await _cache.GetAsync<List<object>>(key);
+
+            if (cached != null)
+            {
+                _logger.LogInformation("Pegando vs_currencies do cache");
+                return cached;
+            }
+
+            var result = await GetJsonAsync<List<object>>("simple/supported_vs_currencies");
+            await _cache.SetAsync(key, result, TimeSpan.FromHours(12));
+
+            _logger.LogInformation("Pegando vs_currencies da API e salvando no cache com 12 horas");
+            return result;
+        }
+
+        public async Task<GlobalStatsDto> GetGlobalStatsAsync()
+        {
+            string key = "global";
+            var cached = await _cache.GetAsync<GlobalStatsDto>(key);
+
+            if (cached != null)
+                return cached;
+
+            var result = await GetJsonAsync<GlobalStatsDto>("global");
+            await _cache.SetAsync(key, result, TimeSpan.FromMinutes(30));
+
+            return result;
+        }
+        public async Task<List<CoinCategoryDto>> GetCategoriesAsync()
+        {
+            string key = "coins:categories";
+            var cached = await _cache.GetAsync<List<CoinCategoryDto>>(key);
+
+            if (cached != null)
+                return cached;
+
+            var result = await GetJsonAsync<List<CoinCategoryDto>>("coins/categories");
+            await _cache.SetAsync(key, result, TimeSpan.FromHours(1));
+
+            return result;
+        }
+        public async Task<SearchResponseDto> SearchAsync(string query)
+        {
+            return await GetJsonAsync<SearchResponseDto>($"search?query={query}");
+        }
+        public async Task<MarketChartDto> GetMarketChartAsync(string coinId, string vsCurrency, int days)
+        {
+            string key = $"market_chart:{coinId}:{vsCurrency}:{days}";
+            var cached = await _cache.GetAsync<MarketChartDto>(key);
+
+            if (cached != null)
+                return cached;
+
+            var result = await GetJsonAsync<MarketChartDto>(
+                $"coins/{coinId}/market_chart?vs_currency={vsCurrency}&days={days}");
+
+            await _cache.SetAsync(key, result, TimeSpan.FromMinutes(10));
+
+            return result;
+        }
+        public async Task<Dictionary<string, TokenPriceDto>> GetTokenPriceAsync(
+        string platformId, string contractAddress, string vsCurrency = "usd")
+        {
+            string key = $"token_price:{platformId}:{contractAddress}:{vsCurrency}";
+            var cached = await _cache.GetAsync<Dictionary<string, TokenPriceDto>>(key);
+
+            if (cached != null)
+                return cached;
+
+            string url =
+                $"simple/token_price/{platformId}?contract_addresses={contractAddress}&vs_currencies={vsCurrency}";
+
+            var result = await GetJsonAsync<Dictionary<string, TokenPriceDto>>(url);
+
+            await _cache.SetAsync(key, result, TimeSpan.FromMinutes(5));
+
+            return result;
+        }
+
     }
 }
