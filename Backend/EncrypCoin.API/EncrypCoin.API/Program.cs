@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using EncrypCoin.API.Data;
-using EncrypCoin.API.Dtos.Mappings;
+﻿using EncrypCoin.API.Data;
 using EncrypCoin.API.Middlewares;
 using EncrypCoin.API.Repository.Implementations;
 using EncrypCoin.API.Repository.Interfaces;
@@ -12,10 +10,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Context;
 using StackExchange.Redis;
+using System.Diagnostics;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("serilog.json", optional: false, reloadOnChange: true);
+
+builder.Host.UseSerilog((context, config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration);
+});
 
 // =========================
 // 🔐 Configuração JWT
@@ -166,6 +173,18 @@ app.UseExceptionHandler(errorApp =>
         }));
     });
 });
+// =========================
+// 🆔 Middleware de TraceId
+// =========================
+app.UseSerilogRequestLogging();
+app.Use(async (ctx, next) =>
+{
+    var traceId = Activity.Current?.Id ?? ctx.TraceIdentifier;
+
+    LogContext.PushProperty("TraceId", traceId);
+
+    await next();
+});
 
 // =========================
 // 🔒 Middlewares
@@ -174,10 +193,18 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseMiddleware<ActiveUserMiddleware>();
 app.UseAuthorization();
+app.UseExceptionMiddleware();
+
 
 // =========================
 // 📡 Map Controllers
 // =========================
 app.MapControllers();
+
+app.MapGet("/test", () =>
+{
+    Log.Information("Testando log estruturado.");
+    return "ok";
+});
 
 await app.RunAsync();
