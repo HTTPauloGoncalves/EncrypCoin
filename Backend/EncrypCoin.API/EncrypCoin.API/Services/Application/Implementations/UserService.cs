@@ -257,6 +257,18 @@ namespace EncrypCoin.API.Services.Application.Implementations
 
             return _mapper.Map<UserResponseDto>(user);
         }
+        public async Task<bool> SetUserActiveStatusAsync(Guid id, bool status)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+                return false;
+
+            user.IsActive = status;
+            await _userRepository.UpdateAsync(user);
+
+            return true;
+        }
 
         public async Task<UserResponseDto> UpdateEmailAsync(UserUpdateRequestDto userUpdateRequestDto)
         {

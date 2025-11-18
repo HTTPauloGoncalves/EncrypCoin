@@ -22,5 +22,6 @@ namespace EncrypCoin.API.Services.Application.Interfaces
         Task<bool> DeactivateUserAsync(Guid userId);
         Task<bool> DeleteUserAsync(Guid userId);
         Task LogoutAsync(Guid userId);
+        Task<bool> SetUserActiveStatusAsync(Guid id, bool status);
     }
 }

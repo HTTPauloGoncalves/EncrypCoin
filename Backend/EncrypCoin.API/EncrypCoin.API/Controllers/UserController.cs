@@ -118,15 +118,20 @@ namespace EncrypCoin.API.Controllers
             return updated is null ? NotFound() : Ok(updated);
         }
 
-       
 
-        [Authorize]
-        [HttpPatch("{id:guid}/activate")]
-        public async Task<IActionResult> ActivateUserAsync(Guid id)
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPatch("{id:guid}/status")]
+        public async Task<IActionResult> UpdateUserStatus(Guid id, [FromQuery] bool active)
         {
-            bool result = await _userService.UpdateAsync(id, new UserUpdateRequestDto { IsActive = true }) != null;
-            return result ? Ok("Usuário ativado.") : NotFound("Usuário não encontrado.");
+            var updated = await _userService.SetUserActiveStatusAsync(id, active);
+
+            return updated
+                ? Ok($"Usuário {(active ? "ativado" : "desativado")}.")
+                : NotFound("Usuário não encontrado.");
         }
+
+
 
         // ----------------------------
         // DELETE
