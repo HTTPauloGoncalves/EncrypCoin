@@ -3,6 +3,7 @@ using EncrypCoin.API.Dtos.Application.User.Response;
 using EncrypCoin.API.Services.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EncrypCoin.API.Controllers
 {
@@ -79,6 +80,23 @@ namespace EncrypCoin.API.Controllers
             return authenticatedUser is null ? Unauthorized() : Ok(authenticatedUser);
         }
 
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var userIdClaim = User.FindFirst("id") ?? User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim is null)
+                return Unauthorized("Token inválido. Usuário não identificado.");
+
+            if (!Guid.TryParse(userIdClaim.Value, out var userId))
+                return BadRequest("Claim de usuário inválida.");
+
+            await _userService.LogoutAsync(userId);
+
+            return Ok(new { message = "Logout realizado com sucesso." });
+        }
+
         [HttpPost]
         public async Task<IActionResult> RegisterUserAsync([FromBody] UserRegisterRequestDto dto)
         {
@@ -100,12 +118,14 @@ namespace EncrypCoin.API.Controllers
             return updated is null ? NotFound() : Ok(updated);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPatch("{id:guid}/deactivate")]
-        public async Task<IActionResult> DeactivateUserAsync(Guid id)
+       
+
+        [Authorize]
+        [HttpPatch("{id:guid}/activate")]
+        public async Task<IActionResult> ActivateUserAsync(Guid id)
         {
-            bool result = await _userService.DeactivateUserAsync(id);
-            return result ? Ok("Usuário desativado.") : NotFound("Usuário não encontrado.");
+            bool result = await _userService.UpdateAsync(id, new UserUpdateRequestDto { IsActive = true }) != null;
+            return result ? Ok("Usuário ativado.") : NotFound("Usuário não encontrado.");
         }
 
         // ----------------------------

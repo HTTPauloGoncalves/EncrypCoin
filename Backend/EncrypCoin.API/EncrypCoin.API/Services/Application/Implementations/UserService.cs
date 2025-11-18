@@ -365,5 +365,15 @@ namespace EncrypCoin.API.Services.Application.Implementations
             return _mapper.Map<UserResponseDto>(user);
         }
 
+        public async Task LogoutAsync(Guid userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId)
+                ?? throw new NotFoundException($"Usuário com ID {userId} não encontrado.");
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+        }
     }
 }

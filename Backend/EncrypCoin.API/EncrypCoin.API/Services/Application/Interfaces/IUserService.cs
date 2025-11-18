@@ -21,5 +21,6 @@ namespace EncrypCoin.API.Services.Application.Interfaces
         Task<UserResponseDto> UpdatePasswordAsync(UserUpdateRequestDto userUpdateRequestDto);
         Task<bool> DeactivateUserAsync(Guid userId);
         Task<bool> DeleteUserAsync(Guid userId);
+        Task LogoutAsync(Guid userId);
     }
 }
