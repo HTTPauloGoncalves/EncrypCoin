@@ -72,8 +72,13 @@ namespace EncrypCoin.API.Services.Application.Implementations
 
         public async Task<bool> EmailExistsAsync(string email)
         {
+            bool isValidEmail = IsValidEmail(email);
+
             if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email não pode ser vazio.");
+                throw new ArgumentException("Email não pode ser vazio.");            
+
+            if (!isValidEmail)
+                throw new ArgumentException("Email inválido.");
 
             return await _userRepository.EmailExistsAsync(email);
 
@@ -356,7 +361,7 @@ namespace EncrypCoin.API.Services.Application.Implementations
             return true;
         }
 
-        public async Task<UserResponseDto> UpdateAsync(Guid id, UserUpdateRequestDto dto)
+        public async Task<UserResponseDto?> UpdateAsync(Guid id, UserUpdateRequestDto dto)
         {
             var user = await _userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException($"Usuário com ID {id} não encontrado.");
@@ -382,10 +387,27 @@ namespace EncrypCoin.API.Services.Application.Implementations
             var user = await _userRepository.GetByIdAsync(userId)
                 ?? throw new NotFoundException($"Usuário com ID {userId} não encontrado.");
 
-            user.RefreshToken = null;
+            user.RefreshToken = String.Empty;
             user.RefreshTokenExpiryTime = DateTime.UtcNow;
 
             await _userRepository.UpdateAsync(user);
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
