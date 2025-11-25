@@ -208,3 +208,4 @@ app.MapGet("/test", () =>
 });
 
 await app.RunAsync();
+Console.WriteLine("Rodando em: http://localhost:5232/");

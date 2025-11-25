@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36408.4
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11218.70 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.API", "EncrypCoin.API\EncrypCoin.API.csproj", "{5BF52108-A2B4-435A-9FFA-6372DBFCDB57}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.UnitTests", "EncrypCoin.UnitTests\EncrypCoin.UnitTests.csproj", "{87218453-6EC2-4855-B4C1-8007B6090472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.IntegrationTests", "EncrypCoin.IntegrationTests\EncrypCoin.IntegrationTests.csproj", "{13E9299A-B9D3-433E-96E3-89254241A432}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{87218453-6EC2-4855-B4C1-8007B6090472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87218453-6EC2-4855-B4C1-8007B6090472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87218453-6EC2-4855-B4C1-8007B6090472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E9299A-B9D3-433E-96E3-89254241A432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E9299A-B9D3-433E-96E3-89254241A432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E9299A-B9D3-433E-96E3-89254241A432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E9299A-B9D3-433E-96E3-89254241A432}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

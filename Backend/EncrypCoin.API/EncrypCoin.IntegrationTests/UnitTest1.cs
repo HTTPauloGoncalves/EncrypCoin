@@ -1,4 +1,4 @@
-﻿namespace EncrypCoin.UnitTests
+﻿namespace EncrypCoin.IntegrationTests
 {
     public class UnitTest1
     {
