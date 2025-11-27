@@ -6,7 +6,10 @@ using EncrypCoin.API.Services.Application.Implementations;
 using EncrypCoin.API.Services.Application.Interfaces;
 using EncrypCoin.API.Services.External.Implementations;
 using EncrypCoin.API.Services.External.Interfaces;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,6 +18,7 @@ using Serilog.Context;
 using StackExchange.Redis;
 using System.Diagnostics;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("serilog.json", optional: false, reloadOnChange: true);
@@ -142,6 +146,13 @@ builder.Services.AddHttpClient<ICoinGeckoClient, CoinGeckoClient>(client =>
 });
 
 // =========================
+// Helth Checks
+// =========================
+builder.Services.AddHealthChecks()
+    .AddNpgSql(connectionString, name: "PostgreSQL")
+    .AddRedis(redisConnection, name: "redis");
+
+// =========================
 // 🚀 Build da Aplicação
 // =========================
 var app = builder.Build();
@@ -207,5 +218,29 @@ app.MapGet("/test", () =>
     return "ok";
 });
 
+
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+
+        var json = JsonSerializer.Serialize(new
+        {
+            status = report.Status.ToString(),
+            results = report.Entries.Select(e => new {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            })
+        });
+
+        await context.Response.WriteAsync(json);
+    }
+});
+
+string url = app.Urls.FirstOrDefault() ?? "http://localhost:5232";
+
+Console.WriteLine(url);
 await app.RunAsync();
-Console.WriteLine("Rodando em: http://localhost:5232/");

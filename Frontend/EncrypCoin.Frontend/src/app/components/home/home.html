@@ -1,0 +1,21 @@
+<section class="p-5">
+  <div class="flex flex-col items-center justify-center">
+    <div>
+      <h1 class="text-2xl">EncrypCoin FrontEnd !</h1>
+    </div>
+
+    <input #textInput
+           type="text"
+           placeholder="Enter your text"
+           class="border p-2 rounded-md mt-4" />
+
+    <div>
+      <button
+        (click)="onButtonClick(textInput.value)"
+        class="bg-blue-500 cursor-pointer rounded-md text-white px-4 py-2 mt-5"
+      >
+        {{ textButton }}
+      </button>
+    </div>
+  </div>
+</section>
