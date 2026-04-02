@@ -1,9 +1,8 @@
 namespace EncrypCoin.IntegrationTests;
 
-[TestClass]
 public class TokenControllerTests
 {
-    [TestMethod]
+    [Fact]
     public void TestMethod1()
     {
     }

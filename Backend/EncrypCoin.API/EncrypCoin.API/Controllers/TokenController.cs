@@ -1,5 +1,5 @@
-﻿using EncrypCoin.API.Dtos.Application.Auth.Request;
-using EncrypCoin.API.Services.Application.Interfaces;
+using EncrypCoin.Application.Dtos.Application.Auth.Request;
+using EncrypCoin.Application.Interfaces.Application;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 

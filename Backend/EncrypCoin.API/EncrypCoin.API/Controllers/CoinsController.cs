@@ -1,5 +1,5 @@
-﻿using EncrypCoin.API.Dtos.External.Coingecko;
-using EncrypCoin.API.Services.External.Interfaces;
+using EncrypCoin.Application.Dtos.External.Coingecko;
+using EncrypCoin.Application.Interfaces.External;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,13 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11218.70 d18.3
+VisualStudioVersion = 18.3.11218.70
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.API", "EncrypCoin.API\EncrypCoin.API.csproj", "{5BF52108-A2B4-435A-9FFA-6372DBFCDB57}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.UnitTests", "EncrypCoin.UnitTests\EncrypCoin.UnitTests.csproj", "{87218453-6EC2-4855-B4C1-8007B6090472}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.IntegrationTests", "EncrypCoin.IntegrationTests\EncrypCoin.IntegrationTests.csproj", "{13E9299A-B9D3-433E-96E3-89254241A432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.Domain", "EncrypCoin.Domain\EncrypCoin.Domain.csproj", "{A296C1BF-F261-4BF0-B680-6F774AF64BF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.Infrastructure", "EncrypCoin.Infrastructure\EncrypCoin.Infrastructure.csproj", "{80D87655-F9AD-4E56-8B64-94095022B21F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.Application", "EncrypCoin.Application\EncrypCoin.Application.csproj", "{1624AACB-FE2C-498E-9563-C4ECF33FE82C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncrypCoin.IoC", "EncrypCoin.IoC\EncrypCoin.IoC.csproj", "{9FF39036-E925-4D00-824D-AABA538B1862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,22 @@ Global
 		{13E9299A-B9D3-433E-96E3-89254241A432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13E9299A-B9D3-433E-96E3-89254241A432}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13E9299A-B9D3-433E-96E3-89254241A432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A296C1BF-F261-4BF0-B680-6F774AF64BF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A296C1BF-F261-4BF0-B680-6F774AF64BF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A296C1BF-F261-4BF0-B680-6F774AF64BF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A296C1BF-F261-4BF0-B680-6F774AF64BF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80D87655-F9AD-4E56-8B64-94095022B21F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80D87655-F9AD-4E56-8B64-94095022B21F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80D87655-F9AD-4E56-8B64-94095022B21F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80D87655-F9AD-4E56-8B64-94095022B21F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1624AACB-FE2C-498E-9563-C4ECF33FE82C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1624AACB-FE2C-498E-9563-C4ECF33FE82C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1624AACB-FE2C-498E-9563-C4ECF33FE82C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1624AACB-FE2C-498E-9563-C4ECF33FE82C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FF39036-E925-4D00-824D-AABA538B1862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FF39036-E925-4D00-824D-AABA538B1862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FF39036-E925-4D00-824D-AABA538B1862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FF39036-E925-4D00-824D-AABA538B1862}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
-﻿using EncrypCoin.API.Dtos.Application.User.Request;
-using EncrypCoin.API.Dtos.Application.User.Response;
-using EncrypCoin.API.Services.Application.Interfaces;
+using EncrypCoin.Application.Dtos.Application.User.Request;
+using EncrypCoin.Application.Dtos.Application.User.Response;
+using EncrypCoin.Application.Interfaces.Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

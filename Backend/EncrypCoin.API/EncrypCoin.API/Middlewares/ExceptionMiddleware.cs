@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
-using EncrypCoin.API.Dtos;
-using EncrypCoin.API.Exceptions;
+using EncrypCoin.Application.Dtos;
+using EncrypCoin.Application.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
