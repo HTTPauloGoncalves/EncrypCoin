@@ -1,6 +1,7 @@
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace EncrypCoin.Application.Services.Base
+namespace EncrypCoin.Infrastructure.Services.Base
 {
     public abstract class BaseHttpService
     {

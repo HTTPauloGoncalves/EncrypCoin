@@ -1,8 +1,8 @@
-﻿using EncrypCoin.Application.Interfaces.Application;
+using EncrypCoin.Application.Interfaces.Application;
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace EncrypCoin.Application.Services.Application
+namespace EncrypCoin.Infrastructure.Services.Application
 {
     public class RedisCacheService : ICacheService
     {
@@ -25,4 +25,3 @@ namespace EncrypCoin.Application.Services.Application
         }
     }
 }
-

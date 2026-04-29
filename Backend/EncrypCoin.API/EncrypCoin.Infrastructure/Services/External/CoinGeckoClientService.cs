@@ -1,9 +1,10 @@
 using EncrypCoin.Application.Dtos.External.Coingecko;
-using EncrypCoin.Application.Services.Base;
 using EncrypCoin.Application.Interfaces.Application;
 using EncrypCoin.Application.Interfaces.External;
+using EncrypCoin.Infrastructure.Services.Base;
+using Microsoft.Extensions.Logging;
 
-namespace EncrypCoin.Application.Services.External
+namespace EncrypCoin.Infrastructure.Services.External
 {
     public class CoinGeckoClient : BaseHttpService, ICoinGeckoClient
     {
@@ -11,7 +12,7 @@ namespace EncrypCoin.Application.Services.External
         private readonly ILogger _logger;
 
         public CoinGeckoClient(HttpClient client, ILogger<CoinGeckoClient> logger, ICacheService cache) : base(client, logger)
-        { 
+        {
             _cache = cache;
             _logger = logger;
         }
@@ -59,7 +60,7 @@ namespace EncrypCoin.Application.Services.External
                 _logger.LogInformation("Pegando lista de coins do cache");
                 return cached;
             }
-            
+
             var result = await GetJsonAsync<List<CoinListDto>>("coins/list");
             await _cache.SetAsync(key, result, TimeSpan.FromHours(1));
 
@@ -87,9 +88,9 @@ namespace EncrypCoin.Application.Services.External
         }
 
         public async Task<TrendingResponseDto> GetTrendingAsync()
-        { 
+        {
             string key = $"trending";
-            var cached =  await _cache.GetAsync<TrendingResponseDto>(key);
+            var cached = await _cache.GetAsync<TrendingResponseDto>(key);
 
             if (cached != null)
             {
@@ -142,6 +143,7 @@ namespace EncrypCoin.Application.Services.External
 
             return result;
         }
+
         public async Task<List<CoinCategoryDto>> GetCategoriesAsync()
         {
             string key = "coins:categories";
@@ -155,10 +157,12 @@ namespace EncrypCoin.Application.Services.External
 
             return result;
         }
+
         public async Task<SearchResponseDto> SearchAsync(string query)
         {
             return await GetJsonAsync<SearchResponseDto>($"search?query={query}");
         }
+
         public async Task<MarketChartDto> GetMarketChartAsync(string coinId, string vsCurrency, int days)
         {
             string key = $"market_chart:{coinId}:{vsCurrency}:{days}";
@@ -174,6 +178,7 @@ namespace EncrypCoin.Application.Services.External
 
             return result;
         }
+
         public async Task<Dictionary<string, TokenPriceDto>> GetTokenPriceAsync(
         string platformId, string contractAddress, string vsCurrency = "usd")
         {

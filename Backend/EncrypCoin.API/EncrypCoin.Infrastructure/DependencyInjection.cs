@@ -5,8 +5,8 @@ using EncrypCoin.Infrastructure.Repository.Implementations;
 using EncrypCoin.Application.Interfaces.Infrastructure;
 using EncrypCoin.Application.Interfaces.Application;
 using EncrypCoin.Application.Interfaces.External;
-using EncrypCoin.Application.Services.Application;
-using EncrypCoin.Application.Services.External;
+using EncrypCoin.Infrastructure.Services.Application;
+using EncrypCoin.Infrastructure.Services.External;
 
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
